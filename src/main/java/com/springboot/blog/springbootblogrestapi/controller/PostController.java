@@ -3,6 +3,7 @@ package com.springboot.blog.springbootblogrestapi.controller;
 import com.springboot.blog.springbootblogrestapi.payload.PostDto;
 import com.springboot.blog.springbootblogrestapi.payload.PostResponse;
 import com.springboot.blog.springbootblogrestapi.service.PostService;
+import com.springboot.blog.springbootblogrestapi.utils.AppContants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,10 +29,10 @@ public class PostController {
 
     //get all posts
     @GetMapping
-    public PostResponse getAllPosts(@RequestParam(value = "pageNo",defaultValue = "0", required = false) int pageNo,
-                                    @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
-                                    @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
-                                    @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir) {
+    public PostResponse getAllPosts(@RequestParam(value = "pageNo",defaultValue = AppContants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+                                    @RequestParam(value = "pageSize", defaultValue = AppContants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+                                    @RequestParam(value = "sortBy", defaultValue = AppContants.DEFAULT_SORT_BY, required = false) String sortBy,
+                                    @RequestParam(value = "sortDir", defaultValue = AppContants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
         return postService.getAllPosts(pageNo,pageSize,sortBy,sortDir);
     }
 
