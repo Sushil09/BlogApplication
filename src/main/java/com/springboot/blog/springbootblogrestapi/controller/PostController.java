@@ -13,7 +13,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping("")
 public class PostController {
 
     private PostService postService;
@@ -31,7 +31,7 @@ public class PostController {
     }
 
     //get all posts
-    @GetMapping
+    @GetMapping("/api/posts/v1")
     public PostResponse getAllPosts(@RequestParam(value = "pageNo", defaultValue = AppContants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
                                     @RequestParam(value = "pageSize", defaultValue = AppContants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
                                     @RequestParam(value = "sortBy", defaultValue = AppContants.DEFAULT_SORT_BY, required = false) String sortBy,
@@ -40,14 +40,14 @@ public class PostController {
     }
 
     //get a particular post
-    @GetMapping("/{id}")
+    @GetMapping("/api/posts/v1/{id}")
     public ResponseEntity<PostDto> getPostById(@PathVariable("id") Long id) {
         return new ResponseEntity<>(postService.getPostById(id), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     //update a particular post
-    @PutMapping("/{id}")
+    @PutMapping("/api/posts/v1/{id}")
     public ResponseEntity<PostDto> updatePost(@Valid @RequestBody PostDto postDto, @PathVariable("id") Long id) {
         PostDto postResponse = postService.updatePost(postDto, id);
         return new ResponseEntity<>(postResponse, HttpStatus.OK);
@@ -55,7 +55,7 @@ public class PostController {
 
     //deleting a post
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/api/posts/v1/{id}")
     public ResponseEntity<String> deletePost(@Valid @PathVariable("id") Long id) {
         postService.deletePost(id);
         return new ResponseEntity<>(String.format("The post with id %s is deleted", id), HttpStatus.OK);

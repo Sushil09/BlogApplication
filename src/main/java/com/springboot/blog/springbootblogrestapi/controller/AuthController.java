@@ -2,10 +2,12 @@ package com.springboot.blog.springbootblogrestapi.controller;
 
 import com.springboot.blog.springbootblogrestapi.model.Roles;
 import com.springboot.blog.springbootblogrestapi.model.User;
+import com.springboot.blog.springbootblogrestapi.payload.JWTAuthResponse;
 import com.springboot.blog.springbootblogrestapi.payload.LogInDto;
 import com.springboot.blog.springbootblogrestapi.payload.SignupDto;
 import com.springboot.blog.springbootblogrestapi.repository.RoleRepository;
 import com.springboot.blog.springbootblogrestapi.repository.UserRepository;
+import com.springboot.blog.springbootblogrestapi.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Collections;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("")
 public class AuthController {
 
     @Autowired
@@ -37,14 +39,21 @@ public class AuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @PostMapping("/signin")
-    public ResponseEntity<String> authenticateUser(@RequestBody LogInDto logInDto){
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    @PostMapping("/api/auth/v1/signin")
+    public ResponseEntity<JWTAuthResponse> authenticateUser(@RequestBody LogInDto logInDto){
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(logInDto.getUsernameOrEmail(),logInDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return new ResponseEntity<>("User signed-in successfully", HttpStatus.OK);
+
+        //get token from token provider class
+        String token = jwtTokenProvider.generateToken(authentication);
+
+        return ResponseEntity.ok(new JWTAuthResponse(token));
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/api/auth/v1/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignupDto signupDto){
 
         //add check for userName exists in db.
